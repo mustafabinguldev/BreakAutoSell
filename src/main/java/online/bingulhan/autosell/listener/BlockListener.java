@@ -2,6 +2,7 @@ package online.bingulhan.autosell.listener;
 
 import com.cryptomorin.xseries.messages.ActionBar;
 import online.bingulhan.autosell.AutoSell;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -66,10 +67,13 @@ public class BlockListener implements Listener {
                 DecimalFormat formatter = new DecimalFormat("##.###");
 
 
+                boost=boost/10;
                 //Oyuncuya gönderilecek mesaj ayarlanır.
                 Player p = e.getPlayer();
-                String s = ChatColor.translateAlternateColorCodes('&', "&7Kazanç: &e"+formatter.format(price)+" &7Çarpan: &e%"+boost);
-
+                String s = AutoSell.getInstance().getConfig().getString("actionbar-message");
+                s = StringUtils.replace(s, "%kazanc%", formatter.format(price));
+                s = StringUtils.replace(s, "%carpan%", "1."+boost+"x");
+                s = ChatColor.translateAlternateColorCodes('&', s);
 
                 //Blok Kırılması engellenir yerine hava koyar
                 e.setCancelled(true);

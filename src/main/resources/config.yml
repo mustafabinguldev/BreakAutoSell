@@ -1,5 +1,6 @@
 depend: Vault
 info-gui: true
+actionbar-message: "&7Kazanç: &e%kazanc% &7Çarpan: &e%carpan%"
 enable-worlds:
   - world
   - world_the_nether

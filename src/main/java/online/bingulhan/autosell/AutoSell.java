@@ -1,6 +1,7 @@
 package online.bingulhan.autosell;
 
 import online.bingulhan.autosell.cmd.CMDItems;
+import online.bingulhan.autosell.cmd.CMDReload;
 import online.bingulhan.autosell.economy.VaultEconomyManager;
 import online.bingulhan.autosell.listener.BlockListener;
 import online.bingulhan.autosell.util.MaterialController;
@@ -66,6 +67,7 @@ public final class AutoSell extends JavaPlugin {
 
 
         getCommand("asf").setExecutor(new CMDItems());
+        getCommand("basreload").setExecutor(new CMDReload());
 
 
         //Gui için event.
