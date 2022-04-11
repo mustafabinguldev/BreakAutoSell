@@ -1,0 +1,9 @@
+name: BreakAutoSell
+version: '${project.version}'
+main: online.bingulhan.autosell.AutoSell
+api-version: 1.18
+authors: [ BingulHan ]
+website: www.bingulhan.online
+commands:
+  asf:
+    description: Fiyat listesi

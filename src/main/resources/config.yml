@@ -1,0 +1,12 @@
+depend: Vault
+info-gui: true
+enable-worlds:
+  - world
+  - world_the_nether
+  - world_the_end
+carpan:
+  vip: 20
+  rehber: 10
+items:
+  LAPIS_BLOCK:
+    sell: 1.2
