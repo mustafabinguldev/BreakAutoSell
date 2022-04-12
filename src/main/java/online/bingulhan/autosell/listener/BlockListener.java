@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class BlockListener implements Listener {
         if (!AutoSell.isBreaking.get(player.getName())) {
             AutoSell.getInstance().economyManager.addMoney(player, AutoSell.fb.get(player.getName()));
             AutoSell.getInstance().fb.replace(player.getName(), 0.0);
+            AutoSell.kb.replace(player.getName(), 0);
         }
     }
     @EventHandler
@@ -52,7 +54,12 @@ public class BlockListener implements Listener {
 
                 //Kırılan eşyanın saf fiyatını tespit eder.
 
-                Double price = AutoSell.getInstance().prices.get(m);
+                int d = 0;
+                for (ItemStack xx : e.getBlock().getDrops()) {
+                    d=xx.getAmount()+d;
+                }
+
+                Double price = AutoSell.getInstance().prices.get(m)*Double.parseDouble(""+d);
                 double boost = 0;
 
                 //Çarpanları tespit eder.
@@ -91,11 +98,14 @@ public class BlockListener implements Listener {
                 String s = AutoSell.getInstance().getConfig().getString("actionbar-message");
                 s = StringUtils.replace(s, "%kazanc%", formatter.format(j));
                 s = StringUtils.replace(s, "%carpan%", boost+"X");
+                s = StringUtils.replace(s, "%maden%", ""+AutoSell.kb.get(e.getPlayer().getName()));
                 s = ChatColor.translateAlternateColorCodes('&', s);
 
-                //Blok Kırılması engellenir yerine hava koyar
-                e.setCancelled(true);
+
                 e.getBlock().setType(Material.AIR);
+
+                AutoSell.kb.replace(e.getPlayer().getName(), AutoSell.kb.get(e.getPlayer().getName())+d);
+
 
 
                 //XMaterial'in ActionBar API kullanılarak oyuncuya mesaj gönderilir.
@@ -104,11 +114,11 @@ public class BlockListener implements Listener {
 
                 AutoSell.getInstance().getServer().getScheduler().runTaskLater(AutoSell.getInstance(), () -> {
                     AutoSell.isBreaking.replace(e.getPlayer().getName(), false);
-                }, 40);
+                }, 100);
 
                 AutoSell.getInstance().getServer().getScheduler().runTaskLater(AutoSell.getInstance(), () -> {
                     giving(e.getPlayer());
-                }, 60);
+                }, 120);
 
                 return;
             }

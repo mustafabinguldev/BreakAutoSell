@@ -37,6 +37,8 @@ public final class AutoSell extends JavaPlugin {
 
     public static HashMap<String, Boolean> isBreaking = new HashMap<>();
     public static HashMap<String, Double> fb = new HashMap<>();
+    public static HashMap<String, Integer> kb = new HashMap<>();
+
 
 
     @Override
@@ -94,7 +96,7 @@ public final class AutoSell extends JavaPlugin {
             public void event(PlayerJoinEvent e) {
                 isBreaking.put(e.getPlayer().getName(), false);
                 fb.put(e.getPlayer().getName(), 0.0);
-                e.getPlayer().sendMessage(""+fb.get(e.getPlayer().getName()));
+                kb.put(e.getPlayer().getName(), 0);
 
             }
         }, this);
@@ -105,9 +107,17 @@ public final class AutoSell extends JavaPlugin {
             public void event(PlayerQuitEvent e) {
                 isBreaking.remove(e.getPlayer().getName());
                 fb.remove(e.getPlayer().getName());
+                kb.remove(e.getPlayer().getName());
 
             }
         }, this);
+
+
+        for (OfflinePlayer player : getServer().getOnlinePlayers()) {
+            isBreaking.put(player.getName(), false);
+            fb.put(player.getName(), 0.0);
+            kb.put(player.getName(), 0);
+        }
     }
 
     @Override
