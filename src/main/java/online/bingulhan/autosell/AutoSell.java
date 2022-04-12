@@ -7,9 +7,13 @@ import online.bingulhan.autosell.listener.BlockListener;
 import online.bingulhan.autosell.util.MaterialController;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -30,6 +34,10 @@ public final class AutoSell extends JavaPlugin {
 
     public ArrayList<Material> materials = new ArrayList<>();
     public HashMap<Material, Double> prices = new HashMap<>();
+
+    public static HashMap<String, Boolean> isBreaking = new HashMap<>();
+    public static HashMap<String, Double> fb = new HashMap<>();
+
 
     @Override
     public void onEnable() {
@@ -76,6 +84,28 @@ public final class AutoSell extends JavaPlugin {
             @EventHandler
             public void event(InventoryClickEvent e) {
                 if (e.getWhoClicked().getOpenInventory().getTitle().equals(ChatColor.RED+"Eşya Satış Fiyatları")) e.setCancelled(true);
+            }
+        }, this);
+
+
+        AutoSell.getInstance().getServer().getPluginManager().registerEvents(new Listener() {
+
+            @EventHandler
+            public void event(PlayerJoinEvent e) {
+                isBreaking.put(e.getPlayer().getName(), false);
+                fb.put(e.getPlayer().getName(), 0.0);
+                e.getPlayer().sendMessage(""+fb.get(e.getPlayer().getName()));
+
+            }
+        }, this);
+
+        AutoSell.getInstance().getServer().getPluginManager().registerEvents(new Listener() {
+
+            @EventHandler
+            public void event(PlayerQuitEvent e) {
+                isBreaking.remove(e.getPlayer().getName());
+                fb.remove(e.getPlayer().getName());
+
             }
         }, this);
     }

@@ -5,6 +5,7 @@ import online.bingulhan.autosell.AutoSell;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,6 +17,13 @@ import java.util.ArrayList;
 
 public class BlockListener implements Listener {
 
+    public void giving(OfflinePlayer player) {
+
+        if (!AutoSell.isBreaking.get(player.getName())) {
+            AutoSell.getInstance().economyManager.addMoney(player, AutoSell.fb.get(player.getName()));
+            AutoSell.getInstance().fb.replace(player.getName(), 0.0);
+        }
+    }
     @EventHandler
     public void event(BlockBreakEvent e) {
         Material m = e.getBlock().getType();
@@ -30,9 +38,10 @@ public class BlockListener implements Listener {
             }
 
         }
-
         //Açık değilse kod bloğu durur.
         if (!isActiveWorld) return;
+
+
 
 
         //Materyal sorgular.
@@ -45,7 +54,6 @@ public class BlockListener implements Listener {
 
                 Double price = AutoSell.getInstance().prices.get(m);
                 double boost = 0;
-
 
                 //Çarpanları tespit eder.
                 for (String carpan : AutoSell.getInstance().getConfig().getConfigurationSection("carpan").getKeys(false)) {
@@ -63,23 +71,25 @@ public class BlockListener implements Listener {
                 price = price +mp;
 
 
-                //Ekonomi Düzenleyicisi ile oyuncuya para akışı sağlanır.
-                AutoSell.getInstance().economyManager.addMoney(e.getPlayer(), price);
+                Double i = AutoSell.fb.get(e.getPlayer().getName());
+                AutoSell.fb.replace(e.getPlayer().getName(), price+i);
+                AutoSell.isBreaking.replace(e.getPlayer().getName(), true);
+
 
                 //Double değeri daha güzel bir görüntüye kavuşturur.
                 DecimalFormat formatter = new DecimalFormat("##.###");
-                
+
                 boost=boost+100;
                 boost=boost/100;
 
                 Double main = AutoSell.getInstance().prices.get(m);
 
-
+                Double j = AutoSell.fb.get(e.getPlayer().getName());
 
                 //Oyuncuya gönderilecek mesaj ayarlanır.
                 Player p = e.getPlayer();
                 String s = AutoSell.getInstance().getConfig().getString("actionbar-message");
-                s = StringUtils.replace(s, "%kazanc%", formatter.format(price));
+                s = StringUtils.replace(s, "%kazanc%", formatter.format(j));
                 s = StringUtils.replace(s, "%carpan%", boost+"X");
                 s = ChatColor.translateAlternateColorCodes('&', s);
 
@@ -90,6 +100,15 @@ public class BlockListener implements Listener {
 
                 //XMaterial'in ActionBar API kullanılarak oyuncuya mesaj gönderilir.
                 ActionBar.sendActionBar(p, s);
+
+
+                AutoSell.getInstance().getServer().getScheduler().runTaskLater(AutoSell.getInstance(), () -> {
+                    AutoSell.isBreaking.replace(e.getPlayer().getName(), false);
+                }, 40);
+
+                AutoSell.getInstance().getServer().getScheduler().runTaskLater(AutoSell.getInstance(), () -> {
+                    giving(e.getPlayer());
+                }, 60);
 
                 return;
             }
