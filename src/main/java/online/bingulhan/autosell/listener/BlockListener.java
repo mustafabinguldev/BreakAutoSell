@@ -51,13 +51,16 @@ public class BlockListener implements Listener {
                 for (String carpan : AutoSell.getInstance().getConfig().getConfigurationSection("carpan").getKeys(false)) {
                     if (e.getPlayer().hasPermission(carpan)) {
                         int c = AutoSell.getInstance().getConfig().getInt("carpan."+carpan);
-                        double p = c*(price/100);
-                        price = price + p;
                         boost=boost+c;
-
 
                     }
                 }
+
+                //Boost price yansıması.
+                double mc = price /100;
+                double mp = mc*boost;
+
+                price = price +mp;
 
 
                 //Ekonomi Düzenleyicisi ile oyuncuya para akışı sağlanır.
@@ -65,8 +68,7 @@ public class BlockListener implements Listener {
 
                 //Double değeri daha güzel bir görüntüye kavuşturur.
                 DecimalFormat formatter = new DecimalFormat("##.###");
-
-
+                
                 boost=boost+100;
                 boost=boost/100;
 
@@ -78,7 +80,7 @@ public class BlockListener implements Listener {
                 Player p = e.getPlayer();
                 String s = AutoSell.getInstance().getConfig().getString("actionbar-message");
                 s = StringUtils.replace(s, "%kazanc%", formatter.format(price));
-                s = StringUtils.replace(s, "%carpan%", boost+"x");
+                s = StringUtils.replace(s, "%carpan%", boost+"X");
                 s = ChatColor.translateAlternateColorCodes('&', s);
 
                 //Blok Kırılması engellenir yerine hava koyar
