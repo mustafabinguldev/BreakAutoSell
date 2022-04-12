@@ -44,7 +44,7 @@ public class BlockListener implements Listener {
                 //Kırılan eşyanın saf fiyatını tespit eder.
 
                 Double price = AutoSell.getInstance().prices.get(m);
-                int boost = 0;
+                double boost = 0;
 
 
                 //Çarpanları tespit eder.
@@ -67,12 +67,18 @@ public class BlockListener implements Listener {
                 DecimalFormat formatter = new DecimalFormat("##.###");
 
 
-                boost=boost/10;
+                boost=boost+100;
+                boost=boost/100;
+
+                Double main = AutoSell.getInstance().prices.get(m);
+
+
+
                 //Oyuncuya gönderilecek mesaj ayarlanır.
                 Player p = e.getPlayer();
                 String s = AutoSell.getInstance().getConfig().getString("actionbar-message");
                 s = StringUtils.replace(s, "%kazanc%", formatter.format(price));
-                s = StringUtils.replace(s, "%carpan%", "1."+boost+"x");
+                s = StringUtils.replace(s, "%carpan%", boost+"x");
                 s = ChatColor.translateAlternateColorCodes('&', s);
 
                 //Blok Kırılması engellenir yerine hava koyar
