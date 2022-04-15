@@ -7,5 +7,11 @@ website: www.bingulhan.online
 commands:
   asf:
     description: Fiyat listesi
-  basreload:
-    description: Eklentiyi günceller
+  autosell:
+    description: main command
+  os:
+    description: main command
+  otosat:
+    description: main command
+  as:
+    description: main command
